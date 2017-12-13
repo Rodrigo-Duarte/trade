@@ -37,7 +37,7 @@ BtcRead.prototype.registerTradeListener = function (callback) {
   this.listeners.push(running)
 }
 
-function getTrades(callback) {
+BtcRead.prototype.getTrades = function(callback) {
   var self = this
   return function() {
     self.instance.get('/trades/')

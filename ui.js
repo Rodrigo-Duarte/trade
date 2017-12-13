@@ -5,85 +5,67 @@ var blessed = require('blessed')
      })
 
 
-var grid = new contrib.grid({rows: 6, cols: 4, screen: screen})
+var grid = new contrib.grid({rows: 9, cols: 4, screen: screen})
 
-// var line = grid.set(2,0,2,3, contrib.line,
-//          { style:
-//            { line: "yellow"
-//            , text: "green"
-//            , baseline: "black"}
-//          , xLabelPadding: 3
-//          , xPadding: 5
-//          , label: 'Title'})
-// screen.append(line) //must append before setting data 
-
-function getTicker(line, column, title) {
-    var ticker = grid.set(line, column,1,1, blessed.box, {label: title, content: 'Loading...'})
-    return ticker
+function createLine(line, column, title) {
+    return grid.set(line,column,3,4, contrib.line,
+         { xLabelPadding: 0 , xPadding: 0 , label: title
+         , style: { line: "yellow", text: "green", baseline: "black" } })
 }
 
-function getUpperBarriers(line, column, coin) {
-    var upperBarriers = grid.set(line,column*2,2,2, contrib.bar, {
-        label: 'Upper Barriers ' + coin
-           , barWidth: 8
-           , barSpacing: 12
-           , xOffset: 0
-           , maxHeight: 0
-    })
-    return upperBarriers
+function createTicker(line, column, title) {
+    return grid.set(line, column,1,4, blessed.box, {label: title, content: 'Loading...'})
 }
 
-function getLowerBarriers(line, column, coin) {
-    var lowerBarriers = grid.set(line,column*2,2,2, contrib.bar, {
-        label: 'Lower Barriers ' + coin
-           , barWidth: 8
-           , barSpacing: 12
-           , xOffset: 0
-           , maxHeight: 0
-    })
-    return lowerBarriers
+function createBarrierOpts(text) {
+    return { label: text, barWidth: 8, barSpacing: 12, xOffset: 0, maxHeight: 0 }
+}
+
+function createUpperBarriers(line, column, text) {
+    return grid.set(line,column*2,2,2, contrib.bar,createBarrierOpts(text))
 }
 
 var dashboard = {
-    createTicker: function(line, column, coin) {
-        var el = getTicker(line, column, coin)
+    addTicker: function(line, column, coin) {
+        var el = createTicker(line, column, coin)
         screen.append(el)
         return el
     },
     updateTicker: function(tickerP, min, max, last, volume, spread) {
         tickerP.setContent(
-`Min: R$ ${min.toFixed(2)} Max: R$ ${max.toFixed(2)} 
-
-        Spread: ${spread.toFixed(4)} %
-
-Last: R$ ${last.toFixed(2)} Volume: ${volume}`
-            )
+`Min: R$ ${min.toFixed(2)}  |  Max: R$ ${max.toFixed(2)}  |  Spread: ${spread.toFixed(4)} %  |  Last: R$ ${last.toFixed(2)}  |  Volume: ${volume}`
+        )
     },
 
-    createUpperBarriers: function(line, column, coin) {
-        var el = getUpperBarriers(line, column, coin)
+    addUpperBarriers: function(line, column, coin) {
+        var el = createUpperBarriers(line, column, "Upper barrier " + coin)
         screen.append(el)
         return el
     },
-    updateUpperBarriers: function(el, data) { el.setData(data) },
+    updateBarriers: function(el, data) { el.setData(data) },
 
-    createLowerBarriers: function(line, column, coin) {
-        var el = getLowerBarriers(line, column, coin)
+    addLowerBarriers: function(line, column, coin) {
+        var el = createUpperBarriers(line, column, "Lower barrier " + coin)
         screen.append(el)
         return el
     },
-    updateLowerBarriers: function(el, data) { el.setData(data) },
 
-    setTrades: function(data) {
-        line.setData([data])
+    addGraph: function(line, column, coin) {
+        var el = createLine(line, column, coin)
+        screen.append(el)
+        return el
     },
-
+    updateGraph: function(el, data) { 
+        var prices = data.y.slice().sort()
+        el.options.minY = prices[0]*0.99
+        el.options.maxY = prices[prices.length-1]*1.01
+        el.setData([data]) 
+    }
 }
 
 module.exports = dashboard
 
 //=====
-
 
 screen.key(['escape', 'q', 'C-c'], function(ch, key) {
     return process.exit(0);

@@ -4,10 +4,7 @@ var dashboard = require('./ui.js')
 function createCoinDashboard(coin, anchor){
     var btc = new BtcRead(coin)
 
-    var tickerUi = dashboard.createTicker(anchor, 0, coin)
-    var upperBarrierUi = dashboard.createUpperBarriers(anchor+1,1, coin)
-    var lowerBarrierUi = dashboard.createLowerBarriers(anchor+1,0, coin)
-
+    var tickerUi = dashboard.addTicker(anchor, 0, coin)
     btc.registerTickerListener(function(ina) {
         var spread = (1 - parseFloat(ina.buy)/parseFloat(ina.sell))*100;
         dashboard.updateTicker(
@@ -19,6 +16,8 @@ function createCoinDashboard(coin, anchor){
             spread)
     })
 
+    var upperBarrierUi = dashboard.addUpperBarriers(anchor+1,1, coin)
+    var lowerBarrierUi = dashboard.addLowerBarriers(anchor+1,0, coin)
     btc.registerOrderbookListener(function(ina) {
         var margin = 0.3
         var barrierCount = 7
@@ -29,31 +28,32 @@ function createCoinDashboard(coin, anchor){
         var lowerBarriers = bidsHorizon.sort((a,b) => b[1]-a[1]).slice(0,barrierCount).sort((a,b) => a[0]-b[0])
         var upperBarriers = asksHorizon.sort((a,b) => b[1]-a[1]).slice(0,barrierCount).sort((a,b) => a[0]-b[0])
 
-        dashboard.updateLowerBarriers(lowerBarrierUi,
+        dashboard.updateBarriers(lowerBarrierUi,
         {
             titles: lowerBarriers.map(x => "R$ " + x[0]),
             data: lowerBarriers.map(x => x[1].toFixed(4))
         })
-        dashboard.updateUpperBarriers(upperBarrierUi,
+        dashboard.updateBarriers(upperBarrierUi,
         {
             titles: upperBarriers.map(x => "R$ " + x[0]),
             data: upperBarriers.map(x => x[1].toFixed(4))
         })
     })
+
+    // var graph = dashboard.addGraph(anchor+3,0, coin)
+    // var secsInADay = 24 * 60 * 60
+    // btc.registerTradeListener(function(ina) {
+    //     var dateCut = new Date().getTime()/1000.0 - secsInADay * 5 // 5 days history
+    //     var bla2 = ina.filter(a => a.date >= dateCut)
+    //                  .map(a => [new Date(a.date * 1000), a.price])
+    //                  .reduce((prev, cur) => 
+    //                      {prev.x.push(cur[0]); prev.y.push(cur[1]); return prev;}, 
+    //                      {x:[], y:[]}
+    //                  )
+    //     dashboard.updateGraph(graph, bla2)
+    // })
 }
 
 createCoinDashboard('BTC', 0)
 createCoinDashboard('LTC', 3)
-
-
-// var secsInADay = 24 * 60 * 60
-// bla.registerTradeListener(function(ina) {
-//  var dateCut = new Date().getTime()/1000.0 - secsInADay * 5 // 5 days history
-//  var bla2 = ina.filter(a => a.date >= dateCut)
-//                  .map(a => [new Date(a.date * 1000), a.price])
-//                  .reduce((prev, cur) => 
-//                      {prev.x.push(cur[0]); prev.y.push(cur[1]); return prev;}, 
-//                      {x:[], y:[]}
-//                  )
-//  dashboard.setTrades(bla2)
-// })
+createCoinDashboard('BCH', 6)
