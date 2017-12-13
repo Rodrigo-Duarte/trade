@@ -1,5 +1,6 @@
 var BtcRead = require('./mercado_bitcoin_read.js')
 var dashboard = require('./ui.js')
+var logger = require('./log.js')
 
 function barrierSum(allOrders, barriers) {
     var asksToConsume = allOrders.slice()
@@ -7,7 +8,7 @@ function barrierSum(allOrders, barriers) {
     for ( i = 0 ; i < barriers.length ; i++) {
         var ind = asksToConsume.findIndex(a => a[0] == barriers[i][0])
         var totalVolumeUpToBarrier = asksToConsume.slice(0, ind + 1).map(a => a[1]).reduce((a, b) => a + b, 0)
-        // console.log(`Group ${i} (${barriers[i]}): ` + JSON.stringify(asksToConsume.slice(0, ind + 1)) + " = " + totalVolumeUpToBarrier)
+        logger.verbose(`Group ${i} (${barriers[i]}): ` + JSON.stringify(asksToConsume.slice(0, ind + 1)) + " = " + totalVolumeUpToBarrier)
         accumulatedQty.push([barriers[i][0], totalVolumeUpToBarrier])
         asksToConsume = asksToConsume.splice(ind+1)
     }
