@@ -1,7 +1,7 @@
 var axios = require('axios')
 
 var instance = axios.create({
-  baseURL: 'https://www.mercadobitcoin.net/api/BTC/',
+  baseURL: 'https://www.mercadobitcoin.net/api/LTC/',
   timeout: 10000,
   headers: {'X-Custom-Header': 'foobar'}
 });
@@ -38,6 +38,23 @@ BtcRead.prototype.registerOrderbookListener = function (callback) {
 function getOrderbook(callback) {
   return function() {
     instance.get('/orderbook/')
+    .then(function (response) {
+      callback(response.data)
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+}
+
+BtcRead.prototype.registerTradeListener = function (callback) {
+  var running = setInterval( getTrades(callback), this.interval)
+  this.listeners.push(running)
+}
+
+function getTrades(callback) {
+  return function() {
+    instance.get('/trades/')
     .then(function (response) {
       callback(response.data)
     })
