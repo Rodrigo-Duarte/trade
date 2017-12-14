@@ -14,6 +14,13 @@ function BtcAccount(id, secret) {
   });
 }
 
+BtcAccount.prototype.getAccountInfo = function(callback) {
+  var data = this.getTapiData("get_account_info")
+  treatResponse(
+    this.instance.post(path, data["data"], { headers: { 'TAPI-MAC': data["TAPI-MAC"] } } )
+    , callback)
+}
+
 BtcAccount.prototype.getOrders = function(coin, callback) {
   var data = this.getTapiData("list_orders", { coin_pair: coin })
   treatResponse(
@@ -53,7 +60,7 @@ BtcAccount.prototype.placeOrder = function(action, coin, qty, price, callback) {
 }
 
 function urlencode(params) {
-    return Object.keys(params).reduce((encoded, key) => 
+    return Object.keys(params || {}).reduce((encoded, key) => 
         encoded + encodeURIComponent(key)+"="+encodeURIComponent(params[key])+"&", '')
 }
 
