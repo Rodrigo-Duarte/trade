@@ -1,11 +1,5 @@
 var axios = require('axios')
 
-// var instance = axios.create({
-//   baseURL: 'https://www.mercadobitcoin.net/api/BTC/',
-//   timeout: 10000,
-//   headers: {'X-Custom-Header': 'foobar'}
-// });
-
 function BtcRead(coin) {
   this.listeners = []
   this.interval = 2000

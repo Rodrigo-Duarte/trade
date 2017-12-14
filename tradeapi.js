@@ -18,11 +18,11 @@ BtcAccount.prototype.getTapiData = function(action, coin) {
   return { 'TAPI-MAC': encrypt(fullPath, this.secret), 'data': data }
 }
 
-BtcAccount.prototype.getOrders = function(action, coin, callback) {
-  var data = this.getTapiData(action, coin)
+BtcAccount.prototype.getOrders = function(coin, callback) {
+  var data = this.getTapiData("list_orders", coin)
   this.instance.post('https://www.mercadobitcoin.net/tapi/v3/', data["data"], { headers: { 'TAPI-MAC': data["TAPI-MAC"] } } )
   .then(function (response) {
-    console.log(response.data)
+    callback(response.data)
   })
   .catch(function (error) {
     console.log(error);
@@ -34,5 +34,3 @@ function encrypt(fullPath, secret) {
 }
 
 module.exports = BtcAccount
-
-new BtcAccount('','').getOrders("list_orders", "BRLBTC")
