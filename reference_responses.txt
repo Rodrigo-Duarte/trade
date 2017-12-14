@@ -1,0 +1,27 @@
+responses
+
+==sell LTC order below market price
+{"response_data":{"order":{"order_id":1713403,"coin_pair":"BRLLTC","order_type":2,"status":4,"has_fills":true,"quantity":"0.01387000","limit_price":"900.00000","executed_quantity":"0.01387000","executed_price_avg":"981.00000","fee":"0.09524529","created_timestamp":"1513295791","updated_timestamp":"1513295791","operations":[{"operation_id":623760,"quantity":"0.01387000","price":"981.00000","fee_rate":"0.70","executed_timestamp":"1513295791"}]}},"status_code":100,"server_unix_timestamp":"1513295791"}
+
+==sell LTC order above market price
+{"response_data":{"order":{"order_id":1713435,"coin_pair":"BRLLTC","order_type":2,"status":2,"has_fills":false,"quantity":"0.01387000","limit_price":"1900.00000","executed_quantity":"0.00000000","executed_price_avg":"0.00000","fee":"0.00000000","created_timestamp":"1513295868","updated_timestamp":"1513295868","operations":[]}},"status_code":100,"server_unix_timestamp":"1513295868"}
+
+==cancel LTC order
+{ response_data:
+   { order:
+      { order_id: 1713435,
+        coin_pair: 'BRLLTC',
+        order_type: 2,
+        status: 3,
+        has_fills: false,
+        quantity: '0.01387000',
+        limit_price: '1900.00000',
+        executed_quantity: '0.00000000',
+        executed_price_avg: '0.00000',
+        fee: '0.00000000',
+        created_timestamp: '1513295868',
+        updated_timestamp: '1513295896',
+        operations: [] } },
+  status_code: 100,
+  server_unix_timestamp: '1513295896' }
+
