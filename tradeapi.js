@@ -29,10 +29,18 @@ BtcAccount.prototype.getOrders = function(coin, callback) {
 }
 
 BtcAccount.prototype.placeSellOrder = function(coin, qty, price, callback) {
-  var data = this.getTapiData("place_sell_order", { coin_pair: coin, quantity: qty, limit_price: price })
-  treatResponse(
-    this.instance.post(path, data["data"], { headers: { 'TAPI-MAC': data["TAPI-MAC"] } } )
-    , callback)
+  this.placeOrder('place_sell_order', coin, qty, price, callback)
+}
+
+BtcAccount.prototype.placeBuyOrder = function(coin, qty, price, callback) {
+  this.placeOrder('place_buy_order', coin, qty, price, callback)
+}
+
+BtcAccount.prototype.placeOrder = function(action, coin, qty, price, callback) {
+    var data = this.getTapiData(action, { coin_pair: coin, quantity: qty, limit_price: price })
+    treatResponse(
+        this.instance.post(path, data["data"], { headers: { 'TAPI-MAC': data["TAPI-MAC"] } } )
+        , callback)
 }
 
 function urlencode(params) {
