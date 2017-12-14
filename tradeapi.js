@@ -14,13 +14,6 @@ function BtcAccount(id, secret) {
   });
 }
 
-BtcAccount.prototype.getTapiData = function(action, params) {
-  var tapi_nonce = Math.round(new Date().getTime())
-  var data = urlencode(params) + 'tapi_method=' + action + '&tapi_nonce=' + tapi_nonce
-  var fullPath = path + '?' + data
-  return { 'TAPI-MAC': encrypt(fullPath, this.secret), 'data': data }
-}
-
 BtcAccount.prototype.getOrders = function(coin, callback) {
   var data = this.getTapiData("list_orders", { coin_pair: coin })
   treatResponse(
@@ -36,6 +29,22 @@ BtcAccount.prototype.placeBuyOrder = function(coin, qty, price, callback) {
   this.placeOrder('place_buy_order', coin, qty, price, callback)
 }
 
+BtcAccount.prototype.cancelOrder = function(coin, orderId, callback) {
+  var data = this.getTapiData("cancel_order", { coin_pair: coin, order_id: orderId })
+  treatResponse(
+    this.instance.post(path, data["data"], { headers: { 'TAPI-MAC': data["TAPI-MAC"] } } )
+    , callback)
+}
+
+//TODO this should be private
+BtcAccount.prototype.getTapiData = function(action, params) {
+  var tapi_nonce = Math.round(new Date().getTime())
+  var data = urlencode(params) + 'tapi_method=' + action + '&tapi_nonce=' + tapi_nonce
+  var fullPath = path + '?' + data
+  return { 'TAPI-MAC': encrypt(fullPath, this.secret), 'data': data }
+}
+
+//TODO this should be private
 BtcAccount.prototype.placeOrder = function(action, coin, qty, price, callback) {
     var data = this.getTapiData(action, { coin_pair: coin, quantity: qty, limit_price: price })
     treatResponse(
