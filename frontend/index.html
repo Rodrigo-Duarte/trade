@@ -1,0 +1,44 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="js/barrierchart.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      // google.charts.setOnLoadCallback(drawChart);
+
+      function openSocket(onmessage) {
+        var ws = new WebSocket('ws://localhost:40510')
+        ws.onopen = function(o) {
+          console.log("onopen"); console.log(o)
+          ws.send('registerOrderbookListener')
+        }
+
+        ws.onerror = function(e) {
+          console.log("onerror"); console.log(e) 
+        }
+
+        ws.onmessage = function(payload) {
+          var message = JSON.parse(payload.data)
+          try { onmessage(message.type, JSON.parse(message.data)) } 
+          catch (err) { console.log("error processing msg: "); console.log(message); console.log(err) }
+        }
+        return ws
+      }
+      openSocket(function(type, data) {
+        switch(type) {
+          case 'barriers':
+        // drawBarrier("UpperBarriers", data.upperBarriers)
+            drawBarrier("LowerBarriers", data.lowerBarriers)    
+            break
+          default:
+            console.log("Invalid message type: " + type)
+        }
+      })
+
+    </script>
+  </head>
+
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
