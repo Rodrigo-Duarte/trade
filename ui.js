@@ -5,24 +5,29 @@ var blessed = require('blessed')
      })
 
 
-var grid = new contrib.grid({rows: 9, cols: 4, screen: screen})
+var grid = new contrib.grid({rows: 100, cols: 50, screen: screen})
 
 function createLine(line, column, title) {
-    return grid.set(line,column,3,4, contrib.line,
+    return grid.set(line,column,30,40, contrib.line,
          { xLabelPadding: 0 , xPadding: 0 , label: title
          , style: { line: "yellow", text: "green", baseline: "black" } })
 }
 
 function createTicker(line, column, title) {
-    return grid.set(line, column,1,4, blessed.box, {label: title, content: 'Loading...'})
-}
-
-function createBarrierOpts(text) {
-    return { label: text, barWidth: 8, barSpacing: 12, xOffset: 0, maxHeight: 0 }
+    return grid.set(line*10, column,10,40, blessed.box, {label: title, content: 'Loading...'})
 }
 
 function createUpperBarriers(line, column, text) {
-    return grid.set(line,column*2,2,2, contrib.bar,createBarrierOpts(text))
+    var width = 13
+    return grid.set(line*10,column*width,20,width, contrib.bar,createBarrierOpts(text))
+}
+
+function createBarrierOpts(text) {
+    return { label: text, barWidth: 12, barSpacing: 10, xOffset: 0, maxHeight: 0 }
+}
+
+function createAdvisorBox(line, column, coin) {
+    return grid.set(line*10, column*13, 20, 13, blessed.box, {label: 'Advisor ' + coin, content: 'Thinking...'})
 }
 
 var dashboard = {
@@ -43,6 +48,13 @@ var dashboard = {
         return el
     },
     updateBarriers: function(el, data) { el.setData(data) },
+
+    addAdvisor: function(line, column, coin) {
+        var el = createAdvisorBox(line, column, coin)
+        screen.append(el)
+        return el
+    },
+    updateAdvisor: function(el, msg) { el.setContent(msg) },
 
     addLowerBarriers: function(line, column, coin) {
         var el = createUpperBarriers(line, column, "Lower barrier " + coin)
