@@ -3,7 +3,7 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript" src="js/barrierchart.js"></script>
     <script type="text/javascript">
-      google.charts.load('current', {'packages':['corechart']});
+      google.charts.load('current', {'packages':['bar']});
       // google.charts.setOnLoadCallback(drawChart);
 
       function openSocket(onmessage) {
@@ -27,7 +27,7 @@
       openSocket(function(type, data) {
         switch(type) {
           case 'barriers':
-        // drawBarrier("UpperBarriers", data.upperBarriers)
+            drawBarrier("UpperBarriers", data.upperBarriers)
             drawBarrier("LowerBarriers", data.lowerBarriers)    
             break
           default:
@@ -39,6 +39,7 @@
   </head>
 
   <body>
-    <div id="chart_div"></div>
+    <div id="LowerBarriers"></div>
+    <div id="UpperBarriers"></div>
   </body>
 </html>
