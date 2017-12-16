@@ -1,8 +1,8 @@
 var WebSocketServer = require('ws').Server,
     wss = new WebSocketServer({port: 40510}),
-    BtcRead = require('./mercado_bitcoin_read.js'),
+    BtcRead = require('./client/mbtc/mercado_bitcoin_read.js'),
     logger = require('./log.js'),
-    BarrierParser = require('./barrierparser.js');
+    BarrierParser = require('./parser/barrierparser.js');
 
 function treatMessage(msg, btc, ws) {
     switch(msg) {
@@ -20,7 +20,8 @@ function registerOrderbookListener(btc, ws) {
         try {
             ws.send(JSON.stringify({
                 type: 'barriers', 
-                data: JSON.stringify(barrierParser.parse(ina))
+                data: JSON.stringify(barrierParser.parse(ina, 0.13, 3)),
+                timestamp: new Date()
             }))
         } catch(err) {
             ws.close()
