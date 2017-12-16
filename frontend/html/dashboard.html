@@ -21,8 +21,8 @@
     <script type="text/javascript" src="../js/charts.js"></script>
     <script type="text/javascript">
       google.charts.load('current', {'packages':['corechart']});
-      google.charts.setOnLoadCallback(drawLine);
-        
+      // google.charts.setOnLoadCallback(drawLine);
+        var tracker = createTracker()
       function openSocket(onmessage) {
         var ws = new WebSocket('ws://localhost:40510')
         
@@ -47,7 +47,7 @@
           case 'barriers':
             drawBarrier("UpperBarriers", data.upperBarriers)
             drawBarrier("LowerBarriers", data.lowerBarriers)
-            
+            tracker.push(data.lowerBarriers, timestamp)
             drawLine("LowerBarriersGraph", tracker.data)
             break
           default:

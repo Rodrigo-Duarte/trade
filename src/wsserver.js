@@ -18,11 +18,13 @@ function registerOrderbookListener(btc, ws) {
     var barrierParser = new BarrierParser()
     btc.registerOrderbookListener(function(ina) {
         try {
-            ws.send(JSON.stringify({
+            var payload = JSON.stringify({
                 type: 'barriers', 
                 data: JSON.stringify(barrierParser.parse(ina, 0.13, 3)),
                 timestamp: new Date()
-            }))
+            })
+            console.log(payload)
+            ws.send(payload)
         } catch(err) {
             ws.close()
         }
@@ -31,7 +33,7 @@ function registerOrderbookListener(btc, ws) {
 
 wss.on('connection', function (ws) {
     console.log('connected')
-    var btc = new BtcRead("BTC")
+    var btc = new BtcRead("LTC")
     
     ws.on('message', function (message) {
         treatMessage(message, btc, ws)

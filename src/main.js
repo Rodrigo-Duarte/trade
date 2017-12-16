@@ -37,12 +37,12 @@ function createCoinDashboard(coin, anchor){
         var barriers = parser.parse(ina)
         
         dashboard.updateBarriers(upperBarrierUi,{
-            titles: barriers.upperBarriers.map(x => "R$ " + x[0].toFixed(2)),
-            data: barriers.upperBarriers.map(x => x[1].toFixed(3))
+            titles: barriers.upperBarriers.map(x => "R$ " + x[0]),
+            data: barriers.upperBarriers.map(x => x[1])
         })
         dashboard.updateBarriers(lowerBarrierUi,{
-            titles: barriers.lowerBarriers.map(x => "R$ " + x[0].toFixed(2)),
-            data: barriers.lowerBarriers.map(x => x[1].toFixed(3))
+            titles: barriers.lowerBarriers.map(x => "R$ " + x[0]),
+            data: barriers.lowerBarriers.map(x => x[1])
         })
     })
 }

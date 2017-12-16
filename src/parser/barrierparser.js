@@ -10,18 +10,18 @@ BarrierParser.prototype.parse = function(ina, margin=0.12, barrierCount=3) {
 
     var accUpperBar = barrierSum(asksHorizon, upperBarriers.slice().reverse())
     var accLowerBar = barrierSum(bidsHorizon, lowerBarriers.slice().reverse()).reverse()
-    return { "upperBarriers" : accUpperBar, "lowerBarriers": lowerBarriers }
+    return { "upperBarriers" : accUpperBar, "lowerBarriers": accLowerBar }
 }
 
 function barrierSum(allOrders, barriers) {
-    var asksToConsume = allOrders.slice()
+    var ordersToConsume = allOrders.slice()
     var accumulatedQty = []
     for ( i = 0 ; i < barriers.length ; i++) {
-        var ind = asksToConsume.findIndex(a => a[0] == barriers[i][0])
-        var totalVolumeUpToBarrier = asksToConsume.slice(0, ind + 1).map(a => a[1]).reduce((a, b) => a + b, 0)
-        logger.debug(`Group ${i} (${barriers[i]}): ` + JSON.stringify(asksToConsume.slice(0, ind + 1)) + " = " + totalVolumeUpToBarrier)
-        accumulatedQty.push([barriers[i][0], totalVolumeUpToBarrier])
-        asksToConsume = asksToConsume.splice(ind+1)
+        var ind = ordersToConsume.findIndex(a => a[0] == barriers[i][0])
+        var totalVolumeUpToBarrier = ordersToConsume.slice(0, ind + 1).map(a => a[1]).reduce((a, b) => a + b, 0)
+        logger.debug(`Group ${i} (${barriers[i]}): ` + JSON.stringify(ordersToConsume.slice(0, ind + 1)) + " = " + totalVolumeUpToBarrier)
+        accumulatedQty.push([barriers[i][0].toFixed(2), totalVolumeUpToBarrier.toFixed(3)])
+        ordersToConsume = ordersToConsume.splice(ind+1)
     }
     return accumulatedQty
 }
